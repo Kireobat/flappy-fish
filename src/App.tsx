@@ -1,4 +1,5 @@
 import './App.css'
+import { deleteUser } from './api/test'
 
 interface entityInterface {
   coordinates: {
@@ -210,7 +211,7 @@ function App() {
     document.getElementById('player')?.style.setProperty('left', `${player.coordinates.x.value}px`)
   }
 
-
+  const onClick = () => { deleteUser()}
 
   return (
     <>
@@ -218,6 +219,7 @@ function App() {
         <div className='bg-black py-4'>
           <button className='bg-white' onClick={startGame}>Start</button>
           <button className='bg-white' onClick={flap}>Flap</button>
+          <button style={{background: "red"}} onClick={onClick}>Click me </button>
         </div>
         <div className='bg-red-200 h-[87vh]'>
 
