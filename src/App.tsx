@@ -300,28 +300,21 @@ export function App() {
 
   function EndCard({ points }: { points: number }) {
     return (
-      <div className='absolute inset-0 bg-gray-900 flex justify-center gap-10'>
-        
       
-
-      <div className='flex flex-col justify-center items-center'>
-        
-        <h1 className='text-white text-4xl font-bold mb-4'>Game Over</h1>
-        <h2 className='text-white text-2xl mb-4'>Final Score: {points}</h2>
-        <button className='bg-white text-black py-2 px-4 rounded-md' onClick={() => {setPoints(0);startGame();}}>Play Again</button>
-        <button className='bg-white text-black py-2 px-4 rounded-md mt-2' onClick={() => setSaveScreenShow(true)}>Save Score</button>
-
-        
-
-        {saveScreenShow ? <SaveScreen /> : null}
-
-      </div>
-      <div className='flex flex-col justify-center'>
+        <div className=' bg-gray-900 absolute inset-0 flex justify-center gap-10'>
+          <div className='flex flex-col justify-center items-center'>
+            <h1 className='text-white text-4xl font-bold mb-4'>Game Over</h1>
+            <h2 className='text-white text-2xl mb-4'>Final Score: {points}</h2>
+            <button className='bg-white text-black py-2 px-4 rounded-md' onClick={() => {setPoints(0);startGame();}}>Play Again</button>
+            <button className='bg-white text-black py-2 px-4 rounded-md mt-2' onClick={() => setSaveScreenShow(true)}>Save Score</button>
+            {saveScreenShow ? <SaveScreen /> : null}
+          </div>
+        <div className='flex flex-col justify-center'>
           <Leaderboard />
         </div>
+        <h1 className='text-white absolute text-xl'>The game must be played at 1536x739 resolution</h1>
       
       </div>
-      
     )
   }
 
