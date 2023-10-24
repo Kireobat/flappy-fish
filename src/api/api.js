@@ -48,7 +48,43 @@ app.post('/api/saveScore', (req, res) => {
             return res.status(400).send('Name must be no more than 3 characters long');
         }
 
-        let stmt = db.prepare('INSERT INTO users (name) VALUES (?);');
+        if (!score) {
+            return res.status(400).send('Missing score');
+        }
+
+        if (score < 0) {
+            return res.status(400).send('Score must be a positive number');
+        }
+
+        let stmt = db.prepare('SELECT id FROM users WHERE name = ?;');
+
+        const userExists = stmt.get(name);
+
+        if (userExists) {
+
+            stmt = db.prepare('SELECT score FROM scores WHERE user_id = ?;');
+
+            const userScore = stmt.get(userExists.id);
+
+            if (userScore.score >= score) {
+                return res.status(200);
+            } else if (userScore.score < score) {
+                stmt = db.prepare('UPDATE scores SET score = ? WHERE user_id = ?;');
+
+                stmt.run(score, userExists.id);
+
+                return res.status(200);
+            }
+
+        }
+
+            
+
+
+        
+
+
+        stmt = db.prepare('INSERT INTO users (name) VALUES (?);');
 
         stmt.run(name);
 
