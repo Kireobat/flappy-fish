@@ -226,8 +226,6 @@ export function App() {
 
   function flap() {
 
-    console.log('flap')
-
     animateFlapUp()
 
     return gravityValue = -6
