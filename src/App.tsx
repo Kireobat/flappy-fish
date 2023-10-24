@@ -32,7 +32,7 @@ export function App() {
 
   const [points, setPoints] = useState(0);
 
-  let opening = 210
+  let opening = 300
 
   const [gameIsRunning, setGameIsRunning] = useState(Boolean)
 
@@ -126,12 +126,15 @@ export function App() {
     return (
       <>
       <div>
-      <div className='bg-green-500 p-1 absolute' id='top-obstacle'>
-        <p>top</p>
+      <div className='bg-green-500 p-1 absolute z-30' id='top-obstacle'>
+        <div className='bg-green-500 p-1 absolute h-96 -translate-y-96 w-20 translate-x-1 z-30'/>
+        <img className='z-40 h-96 -translate-y-80 absolute scale-125' src='../topObstacle.jpg'/>
       </div>
 
-      <div className='bg-green-500 p-1 absolute' id='bottom-obstacle'>
-        <p>bottom</p>  
+      <div className='bg-green-500 p-1 absolute z-30' id='bottom-obstacle'>
+        <div className='bg-gray-500 p-1 absolute h-96 translate-y-10 w-20 translate-x-1 z-30'/>
+        <img className='z-50 absolute -rotate-90 translate-y-8 scale-150' src='https://frivannsliv.no/cdn/shop/articles/krabbe_91fc7f4f-d222-4d46-a2e2-1d5527b2d835.jpg?v=1643204382'/>
+        <img className='z-40 absolute translate-y-20 h-96' src='../bottomObstacle.jpg'/>
       </div>
       </div>
       </>
@@ -174,93 +177,110 @@ export function App() {
 
   function checkForCollision() {
     const playerLeftEdge = player.coordinates.x.value - 45;
-const playerRightEdge = player.coordinates.x.value + player.hitbox.width + 45;
-const playerTopEdge = player.coordinates.y.value;
-const playerBottomEdge = player.coordinates.y.value + player.hitbox.height;
+    const playerRightEdge = player.coordinates.x.value + player.hitbox.width + 45;
+    const playerTopEdge = player.coordinates.y.value;
+    const playerBottomEdge = player.coordinates.y.value + player.hitbox.height;
 
-const bottomObstacleLeftEdge = bottomObstacle.coordinates.x.value;
-const bottomObstacleRightEdge = bottomObstacle.coordinates.x.value + bottomObstacle.hitbox.width;
-const bottomObstacleTopEdge = bottomObstacle.coordinates.y.value;
-const bottomObstacleBottomEdge = bottomObstacle.coordinates.y.value + bottomObstacle.hitbox.height;
+    const bottomObstacleLeftEdge = bottomObstacle.coordinates.x.value;
+    const bottomObstacleRightEdge = bottomObstacle.coordinates.x.value + bottomObstacle.hitbox.width;
+    const bottomObstacleTopEdge = bottomObstacle.coordinates.y.value;
+    const bottomObstacleBottomEdge = bottomObstacle.coordinates.y.value + bottomObstacle.hitbox.height;
 
-const topObstacleLeftEdge = topObstacle.coordinates.x.value;
-const topObstacleRightEdge = topObstacle.coordinates.x.value + topObstacle.hitbox.width;
-const topObstacleTopEdge = topObstacle.coordinates.y.value;
-const topObstacleBottomEdge = topObstacle.coordinates.y.value + topObstacle.hitbox.height;
+    const topObstacleLeftEdge = topObstacle.coordinates.x.value;
+    const topObstacleRightEdge = topObstacle.coordinates.x.value + topObstacle.hitbox.width;
+    const topObstacleTopEdge = topObstacle.coordinates.y.value;
+    const topObstacleBottomEdge = topObstacle.coordinates.y.value + topObstacle.hitbox.height;
 
-if (
-  playerRightEdge >= bottomObstacleLeftEdge &&
-  playerLeftEdge <= bottomObstacleRightEdge &&
-  playerBottomEdge >= bottomObstacleTopEdge &&
-  playerTopEdge <= bottomObstacleBottomEdge
-) {
-  setGameIsRunning(false)
+    if (
+      playerRightEdge >= bottomObstacleLeftEdge &&
+      playerLeftEdge <= bottomObstacleRightEdge &&
+      playerBottomEdge >= bottomObstacleTopEdge &&
+      playerTopEdge <= bottomObstacleBottomEdge
+    ) {
+      setGameIsRunning(false);
+    }
+
+    if (
+      playerRightEdge >= topObstacleLeftEdge &&
+      playerLeftEdge <= topObstacleRightEdge &&
+      playerBottomEdge >= topObstacleTopEdge &&
+      playerTopEdge <= topObstacleBottomEdge
+    ) {
+      setGameIsRunning(false);
+    }
+
+    if (playerBottomEdge >= player.coordinates.y.max || playerTopEdge <= player.coordinates.y.min) {
+      setGameIsRunning(false);
+    }
+
+    if (playerTopEdge <= topObstacleBottomEdge && playerRightEdge >= topObstacleLeftEdge - 2 && playerRightEdge <= topObstacleLeftEdge + 2) {
+      setGameIsRunning(false);
+    }
+
+    if (playerBottomEdge >= bottomObstacleTopEdge && playerRightEdge >= bottomObstacleLeftEdge - 2 && playerRightEdge <= bottomObstacleLeftEdge + 2) {
+      setGameIsRunning(false);
+    }
 }
-
-if (
-  playerRightEdge >= topObstacleLeftEdge &&
-  playerLeftEdge <= topObstacleRightEdge &&
-  playerBottomEdge >= topObstacleTopEdge &&
-  playerTopEdge <= topObstacleBottomEdge
-) {
-  setGameIsRunning(false)
-}
-  }
 
   let gravityValue = 1.1
 
   function flap() {
+
+    console.log('flap')
+
+    animateFlapUp()
+
     return gravityValue = -6
+  }
+
+  function animateFlapUp() {
+    const playerElement = document.getElementById('player');
+    if (playerElement) {
+      playerElement.style.setProperty('transform', 'rotate(-45deg)');
+      playerElement.style.setProperty('transition', 'transform 0.2s ease-in-out');
+      setTimeout(() => {
+        playerElement.style.setProperty('transform', 'rotate(0deg)');
+      }, 200);
+    }
+  }
+
+  function animateFlapDown() {
+    const playerElement = document.getElementById('player');
+    if (playerElement) {
+      const transform = playerElement.style.getPropertyValue('transform');
+      if (!transform.includes('rotate') || transform.includes('rotate(0deg)') || transform.includes('rotate(45deg)')) {
+        playerElement.style.setProperty('transform', 'rotate(45deg)');
+        playerElement.style.setProperty('transition', 'transform 0.2s ease-in-out');
+      }
+    }
   }
 
   function gravity() {
     if (player.coordinates.y.value < player.coordinates.y.max) {
 
       if (gravityValue < 0) {
-        gravityValue = gravityValue + 0.5
+        gravityValue = gravityValue + 0.4
       } else if (gravityValue < 0.5) {
-        gravityValue = gravityValue + 0.1
+        gravityValue = gravityValue + 0.6
       }
       if (gravityValue < 4) {
       gravityValue = gravityValue * 1.06
       }
       
-      
       player.coordinates.y.value += gravityValue
+      if (gravityValue > 0) animateFlapDown()
+      
     }
-  }
-
-  let enableGravity = true
-
-  function gameProcess() {
-    console.log("gameIsRunning: "+gameIsRunning)
-      let game: any = setInterval(() => {
-        if (!gameIsRunning) {
-          alert('game over')
-          return clearInterval(game)
-        }
-        if (enableGravity) {
-          gravity()
-        }
-        enableGravity = !enableGravity
-        
-        addScore()
-        checkForCollision()
-        modifyObstacles()
-        modifyPlayer()
-      }, 5)
   }
 
   function startGame() {
     setGameIsRunning(true)
-    //gameProcess()
   }
-
   function createPlayer() {
     return (
       <>
-        <div className='bg-blue-500 p-1 absolute' id='player'>
-          <p>player</p>
+        <div className='bg-blue-500 p-1 absolute rounded-full' id='player'>
+          <img alt="Player" height={100} className="h-10" src='https://purepng.com/public/uploads/large/91508177304fwtqbi6ctvq3s7govin9kdhbopkgx6pm2tw9buwrhpiqjgygotyhs5dblx1tu7hnlc4ybfyrbkoebudhrtkjjfco08gx1ebrpncy.png'></img>
         </div>
       </>
     )
@@ -275,61 +295,145 @@ if (
 
     if(player.coordinates.y.value > topObstacle.coordinates.y.value && player.coordinates.y.value < bottomObstacle.coordinates.y.value){
       if (player.coordinates.x.value + 2 > bottomObstacle.coordinates.x.value && player.coordinates.x.value - 1 < bottomObstacle.coordinates.x.value  ) {
-        setPoints(prevPoints => prevPoints + 1);
+        return setPoints(prevPoints => prevPoints + 1);
       }
     }
   }
 
-  const createPlayerName = async() => {
-    const response = await fetch('/api/createUser', {
+  function EndCard({ points }: { points: number }) {
+    return (
+      <div className='absolute inset-0 bg-gray-900 flex justify-center gap-10'>
+        
+      
+
+      <div className='flex flex-col justify-center items-center'>
+        
+        <h1 className='text-white text-4xl font-bold mb-4'>Game Over</h1>
+        <h2 className='text-white text-2xl mb-4'>Final Score: {points}</h2>
+        <button className='bg-white text-black py-2 px-4 rounded-md' onClick={() => {setPoints(0);startGame();}}>Play Again</button>
+        <button className='bg-white text-black py-2 px-4 rounded-md mt-2' onClick={() => setSaveScreenShow(true)}>Save Score</button>
+
+        
+
+        {saveScreenShow ? <SaveScreen /> : null}
+
+      </div>
+      <div className='flex flex-col justify-center'>
+          <Leaderboard />
+        </div>
+      
+      </div>
+      
+    )
+  }
+
+  const [saveScreenShow, setSaveScreenShow] = useState(false);
+
+  async function handleSave() {
+    const response = await fetch('/api/saveScore', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({name: 'aaa'})
+      body: JSON.stringify({name: name, score: points})
     })
     const fetchData = await response.json()
     console.log(fetchData)
+    setSaveScreenShow(false)
   }
 
-  function EndCard({ points }: { points: number }) {
-    return (
-      <div className='absolute inset-0 bg-gray-900 flex flex-col justify-center items-center'>
-        <h1 className='text-white text-4xl font-bold mb-4'>Game Over</h1>
-        <h2 className='text-white text-2xl mb-4'>Final Score: {points}</h2>
-        <button className='bg-white text-black py-2 px-4 rounded-md' onClick={() => {setPoints(0);startGame();}}>Play Again</button>
+  const  [name, setName] = useState('');
+
+function SaveScreen() {
+
+
+
+  return (
+    <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white p-4 rounded-md">
+        <h2 className="text-lg font-medium mb-2">Your score: {points}</h2>
+        <label className="block mb-2">Enter your name</label>
+        <input
+          type="text"
+          maxLength={3}
+          placeholder='Max 3 characters'
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          className="border border-gray-300 rounded-md px-2 py-1 mb-2"
+        />
+        <button onClick={handleSave} className="bg-blue-500 text-white py-1 px-4 rounded-md">
+          Save
+        </button>
       </div>
-    )
-  }
+    </div>
+  );
+}
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'ArrowUp') {
+      flap();
+    }
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.code === 'Enter') {
+      setPoints(0);
+      startGame();
+    }
+  });
+
+  function Leaderboard() {
+
+    const [data, setData] = useState<{ name: string, score: number }[] | null>(null);
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'ArrowUp') {
-        flap()
-      }
-    };
-  
-    window.addEventListener('keydown', handleKeyDown);
-  
-    // Cleanup function to remove the event listener when the component unmounts
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []); // Empty dependency array means this effect runs once on mount and cleanup on unmount
+    async function fetchData() {
+      const response = await fetch('/api/getScores?amount=5');
+      const data = await response.json();
+      setData(data);
+    }
+
+    fetchData();
+  }, []);
+
+  if (data === null) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div>
+        <h1 className='text-white text-4xl font-bold mb-4'>Leaderboard</h1>
+        <div className='bg-white rounded-md p-4'>
+          <div className='flex justify-between'>
+          <span>Place</span>
+          <span>Name</span>
+          <span>Score</span>
+          </div>
+          {data.map((entry: { name: string, score: number }, index: number) => {
+            return (
+              <div key={index} className='flex justify-around items-center mb-2'>
+                <span className='text-lg'>{index + 1}.</span>
+                <span className='text-lg'>{entry.name}</span>
+                <span className='text-lg'>{entry.score}</span>
+              </div>
+            )
+          })}
+          
+        </div>
+      </div>
+  );
+}
+
+
 
 
   useEffect(() => {
     if (gameIsRunning) {
       const game = setInterval(() => {
         if (!gameIsRunning) {
-          alert('game over');
           clearInterval(game);
         }
-        if (enableGravity) {
-          gravity();
-        }
-        enableGravity = !enableGravity;
         
+        gravity();
         addScore();
         checkForCollision();
         modifyObstacles();
@@ -346,12 +450,10 @@ if (
 
     {gameIsRunning ? (
       <div className='h-full w-full z-0'>
-        <div className='bg-black py-4'>
-          <button className='bg-white' onClick={startGame}>Start</button>
-          <button className='bg-white' onClick={flap}>Flap</button>
-          <h1 className='text-white'>Score: {points}</h1>
-        </div>
-        <div className='bg-red-200 h-[87vh]'>
+        <div className='bg-red-200 h-[87vh] relative'>
+        <h1 className='absolute right-0 text-5xl mr-4 mt-2 font-gameText z-50'>{points}</h1>
+        <img className='z-0' src="https://cdn1.epicgames.com/ue/product/Screenshot/HighresScreenshot00018-1920x1080-455ada796d5505855b8de23264273e94.jpg?resize=1&w=1920" alt="" />
+        
 
         {generateObstacles()}
         {createPlayer()}
@@ -360,7 +462,9 @@ if (
         </div>
         <div className='bg-black py-6'/>
       </div>
-      ) : <EndCard points={points} />}
+      ) : 
+      <EndCard points={points} />
+      }
     </>
   )
 }

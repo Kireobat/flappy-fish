@@ -31,12 +31,12 @@ app.get('/api/data', (req, res) => {
     res.send(data);
 });
 
-app.post('/api/createUser', (req, res) => {
+app.post('/api/saveScore', (req, res) => {
     try {
 
         console.log(req.body);
 
-        const {name} = req.body;
+        const {name, score} = req.body;
 
         console.log(name);
 
@@ -48,11 +48,17 @@ app.post('/api/createUser', (req, res) => {
             return res.status(400).send('Name must be no more than 3 characters long');
         }
 
-        const stmt = db.prepare('INSERT INTO users (name) VALUES (?);');
+        let stmt = db.prepare('INSERT INTO users (name) VALUES (?);');
 
-        const info = stmt.run(name);
+        stmt.run(name);
 
-        return res.status(200).send(info);
+        const user = db.prepare('SELECT id FROM users WHERE name = ?;').get(name);
+
+        stmt = db.prepare('INSERT INTO scores (user_id, score) VALUES (?, ?);');
+
+        stmt.run(user.id, score);
+
+        return res.status(200);
     } catch (error) {
         return res.status(500).send(error.message);
     }
@@ -60,6 +66,18 @@ app.post('/api/createUser', (req, res) => {
 
 });
 
+
+app.get('/api/getScores', (req, res) => {
+    const {amount} = req.query;
+
+    if (!amount) {
+        return res.status(400).send('Missing amount');
+    }
+
+    const scores = db.prepare('SELECT users.name, scores.score FROM users INNER JOIN scores ON users.id = scores.user_id ORDER BY scores.score DESC LIMIT ?;').all(amount);
+
+    return res.status(200).send(scores);
+});
 
 app.listen(port, () => {
     console.log(`Server listening on port ${port}`);
