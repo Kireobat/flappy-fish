@@ -298,6 +298,20 @@ export function App() {
     }
   }
 
+  const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowHeight(window.innerHeight);
+      setWindowWidth(window.innerWidth);
+    }
+
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   function EndCard({ points }: { points: number }) {
     return (
       
@@ -313,6 +327,22 @@ export function App() {
           <Leaderboard />
         </div>
         <h1 className='text-white absolute text-xl'>The game must be played at 1536x739 resolution</h1>
+        <h1 className='text-white absolute text-xl mt-6'>
+          Your current resolution: {windowWidth}x{windowHeight}
+          {windowWidth == 1536 && windowHeight == 739 ? 
+          (<span className='bg-white px-1 rounded-md ml-4'>
+            <svg className="inline h-6 fill-green-500 mb-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+              <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM337 209L209 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L303 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z"/>
+            </svg>
+          </span>) 
+          :
+          (<span className='bg-white px-1 rounded-md ml-4'>
+            <svg className="inline h-6 fill-red-500 mb-2" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512">
+              <path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24V264c0 13.3-10.7 24-24 24s-24-10.7-24-24V152c0-13.3 10.7-24 24-24zM224 352a32 32 0 1 1 64 0 32 32 0 1 1 -64 0z"/>
+            </svg>
+          </span>)
+          }
+          </h1>
       
       </div>
     )
