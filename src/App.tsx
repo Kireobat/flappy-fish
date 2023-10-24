@@ -126,13 +126,13 @@ export function App() {
     return (
       <>
       <div>
-      <div className='bg-green-500 p-1 absolute z-30' id='top-obstacle'>
-        <div className='bg-green-500 p-1 absolute h-96 -translate-y-96 w-20 translate-x-1 z-30'/>
+      <div className=' p-1 absolute z-30' id='top-obstacle'>
+        <div className=' p-1 absolute h-96 -translate-y-96 w-20 translate-x-1 z-30'/>
         <img className='z-40 h-96 -translate-y-80 absolute scale-125' src='../topObstacle.jpg'/>
       </div>
 
-      <div className='bg-green-500 p-1 absolute z-30' id='bottom-obstacle'>
-        <div className='bg-gray-500 p-1 absolute h-96 translate-y-10 w-20 translate-x-1 z-30'/>
+      <div className=' p-1 absolute z-30' id='bottom-obstacle'>
+        <div className=' p-1 absolute h-96 translate-y-10 w-20 translate-x-1 z-30'/>
         <img className='z-50 absolute -rotate-90 translate-y-8 scale-150' src='https://frivannsliv.no/cdn/shop/articles/krabbe_91fc7f4f-d222-4d46-a2e2-1d5527b2d835.jpg?v=1643204382'/>
         <img className='z-40 absolute translate-y-20 h-96' src='../bottomObstacle.jpg'/>
       </div>
@@ -279,7 +279,7 @@ export function App() {
   function createPlayer() {
     return (
       <>
-        <div className='bg-blue-500 p-1 absolute rounded-full' id='player'>
+        <div className='p-1 absolute rounded-full' id='player'>
           <img alt="Player" height={100} className="h-10" src='https://purepng.com/public/uploads/large/91508177304fwtqbi6ctvq3s7govin9kdhbopkgx6pm2tw9buwrhpiqjgygotyhs5dblx1tu7hnlc4ybfyrbkoebudhrtkjjfco08gx1ebrpncy.png'></img>
         </div>
       </>
@@ -351,17 +351,24 @@ function SaveScreen() {
   return (
     <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-4 rounded-md">
+        <div className='relative'>
         <h2 className="text-lg font-medium mb-2">Your score: {points}</h2>
-        <label className="block mb-2">Enter your name</label>
+        <button onClick={() => setSaveScreenShow(false)} className="absolute top-0 right-0 p-2">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        </div>
+        <label className="block mb-2">Enter your initials</label>
         <input
           type="text"
           maxLength={3}
-          placeholder='Max 3 characters'
+          placeholder='3 characters'
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {setName(e.target.value)}}
           className="border border-gray-300 rounded-md px-2 py-1 mb-2"
         />
-        <button onClick={handleSave} className="bg-blue-500 text-white py-1 px-4 rounded-md">
+        <button onClick={handleSave} className="bg-blue-500 text-white py-1 px-4 rounded-md ml-2">
           Save
         </button>
       </div>
