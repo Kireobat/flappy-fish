@@ -33,12 +33,7 @@ app.get('/api/data', (req, res) => {
 
 app.post('/api/saveScore', (req, res) => {
     try {
-
-        console.log(req.body);
-
         const {name, score} = req.body;
-
-        console.log(name);
 
         if (!name) {
             return res.status(400).send('Missing name');
@@ -69,6 +64,9 @@ app.post('/api/saveScore', (req, res) => {
             if (userScore.score >= score) {
                 return res.status(200);
             } else if (userScore.score < score) {
+
+                console.log("UPDATING SCORE TO " + score + " FOR USER " + userExists.id)
+
                 stmt = db.prepare('UPDATE scores SET score = ? WHERE user_id = ?;');
 
                 stmt.run(score, userExists.id);
@@ -89,6 +87,8 @@ app.post('/api/saveScore', (req, res) => {
         stmt.run(name);
 
         const user = db.prepare('SELECT id FROM users WHERE name = ?;').get(name);
+
+        console.log("INSERTING SCORE " + score + " FOR USER " + user.id)
 
         stmt = db.prepare('INSERT INTO scores (user_id, score) VALUES (?, ?);');
 
